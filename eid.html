@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Radiant Eid Greeting</title>
+  <style>
+    body{
+      margin:0;
+      font-family:Arial, sans-serif;
+      background:#f5f5f5;
+      text-align:center;
+      padding:30px;
+    }
+    .box{
+      max-width:900px;
+      margin:auto;
+      background:#fff;
+      padding:25px;
+      border-radius:16px;
+      box-shadow:0 8px 24px rgba(0,0,0,.08);
+    }
+    h2{
+      margin:0 0 15px;
+      color:#0b5c3b;
+    }
+    input{
+      padding:12px;
+      font-size:16px;
+      width:280px;
+      border:1px solid #ccc;
+      border-radius:8px;
+      margin:10px;
+    }
+    button{
+      padding:12px 20px;
+      font-size:16px;
+      background:#0b5c3b;
+      color:#fff;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+      margin:6px;
+    }
+    canvas{
+      margin-top:20px;
+      max-width:100%;
+      border-radius:12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Write your name here</h2>
+    <input id="nameInput" placeholder="Enter your name">
+    <br>
+    <button onclick="generateCard()">Generate</button>
+    <button onclick="downloadCard()">Download</button>
+    <br>
+    <canvas id="cardCanvas"></canvas>
+  </div>
+
+  <script>
+    const imageURL = "https://i.imgur.com/K1dbFZG.png";
+    const canvas = document.getElementById("cardCanvas");
+    const ctx = canvas.getContext("2d");
+
+    function generateCard() {
+      const name = document.getElementById("nameInput").value.trim();
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+
+      img.onload = function () {
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+
+        if (name) {
+          ctx.font = "bold 25px Arial";
+          ctx.fillStyle = "#0b5c3d";
+          ctx.textAlign = "center";
+          ctx.shadowColor = "rgba(0,0,0,0.45)";
+          ctx.shadowBlur = 6;
+          ctx.fillText(name, canvas.width / 2, canvas.height - 155);
+          ctx.shadowBlur = 0;
+        }
+      };
+
+      img.onerror = function () {
+        alert("Image failed to load.");
+      };
+
+      img.src = imageURL;
+    }
+
+    function downloadCard() {
+      if (!canvas.width) {
+        alert("Generate the card first.");
+        return;
+      }
+      const link = document.createElement("a");
+      const name = document.getElementById("nameInput").value.trim() || "radiant_eid_card";
+      link.download = name.replace(/\s+/g, "_") + ".png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    }
+  </script>
+</body>
+</html>
